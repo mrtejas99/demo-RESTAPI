@@ -1,5 +1,4 @@
 const mongoose=require('mongoose')
-
 const userSchema=mongoose.Schema({
     name:{
         type:String,
@@ -8,11 +7,11 @@ const userSchema=mongoose.Schema({
     email:{
         type:String,
         trim:true,
-        unique=1
+        unique:1
     },
     password:{
         type:String,
-        minlength:8
+        minglength:8
     },
     role:{
         type:Number,
@@ -27,4 +26,4 @@ const userSchema=mongoose.Schema({
 })
 const User= mongoose.model('User',userSchema)
 
-module.export = {User}
+module.exports = {User}
