@@ -50,22 +50,36 @@ userSchema.pre('save',function(next){
     }
 })
 
-userSchema.methods.comparePassword=function(plainPassword,cb){
+userSchema.methods.comparePassword = function(plainPassword,cb){
     bcrypt.compare(plainPassword,this.password,function(err,isMatch){
         if(err) return cb(err);
         cb(null,isMatch);
     })
 }
 
-userSchema.methods.generateToken=function(cb){
+userSchema.methods.generateToken = function(cb){
     var user=this;
+    console.log('user ',user);
+    console.log('userSchema ',userSchema);
+
     var token=jwt.sign(user._id.toHexString(),'secret');
     user.token=token;
     user.save(function(err,user){
-        if(err) throw cb(err);
+        if(err) return cb(err);
         cb(null,user);
     })
 
+}
+
+userSchema.statics.findByToken = function(token,cb){
+    var user=this;
+
+    jwt.verify(token,'secret',function(err,decode){
+        user.findOne({"_id":decode,"token":token},function(err,user){
+            if(err) return cb(err)
+            cb(null,user)
+        })
+    })
 }
 
 const User= mongoose.model('User',userSchema)
